@@ -1,0 +1,26 @@
+name: SPACEID
+version: 1.1.0
+id: reearth-plugin-spaceid
+extensions:
+  - id: spaceid
+    type: widget
+    name: SpaceID
+    schema:
+      groups:
+        - id: customize
+          title: Customize
+          fields:
+            - id: modelurl
+              type: url
+              title: Model URL
+            - id: scale
+              type: number
+              title: Scale
+              description: Displays the 3D model equally multiplied by the set value.
+              prefix: x
+              defaultValue: 1
+    widgetLayout:
+      defaultLocation:
+        zone: outer
+        section: left
+        area: middle
