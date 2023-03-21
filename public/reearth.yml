@@ -10,15 +10,12 @@ extensions:
         - id: customize
           title: Customize
           fields:
-            - id: modelurl
+            - id: imageUrl
               type: url
-              title: Model URL
-            - id: scale
-              type: number
-              title: Scale
-              description: Displays the 3D model equally multiplied by the set value.
-              prefix: x
-              defaultValue: 1
+              title: Image URL
+            - id: imageTitle
+              type: string
+              title: Title image
     widgetLayout:
       defaultLocation:
         zone: outer

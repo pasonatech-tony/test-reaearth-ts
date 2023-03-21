@@ -16,6 +16,17 @@ export type Point = {
 const App = () => {
   const URL = "https://api.wheretheiss.at/v1/satellites/25544";
   const [data, setData] = useState<ISS>();
+  const DEFAULT_IMAGE_URL =
+    "https://images.unsplash.com/photo-1544185310-0b3cf501672b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
+  const [imageUrl] = useState<string>(
+    (window as any).pluginInitProperties?.imageURL ?? DEFAULT_IMAGE_URL
+  );
+
+  const [imageTitle] = useState<string>(
+    (window as any).pluginInitProperties?.imageTitle ?? "This is image title"
+  );
+
+  console.log("imageUrl in fe 1: ", imageUrl);
   const [point, setPoint] = useState<Point>();
   async function fetchData() {
     const response = await fetch(`${URL}`);
@@ -34,7 +45,6 @@ const App = () => {
   }, [addPointAction]);
 
   useEffect(() => {
-    fetchData();
     (globalThis as any).addEventListener("message", (msg: any) => {
       if (msg.source !== (globalThis as any).parent) return;
       try {
@@ -44,10 +54,13 @@ const App = () => {
         // eslint-disable-next-line no-empty
       } catch (error) {}
     });
-  }, [actHandles]);
+    fetchData();
+  }, []);
 
   return (
     <>
+      <img src={imageUrl} width={30} height={30} alt="image from right panel" />
+      <span>{imageTitle}</span>
       <h1>Current ISS location</h1>
       <p>Latitude: {data?.latitude}</p>
       <p>Longitude: {data?.longitude}</p>
