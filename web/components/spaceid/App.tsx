@@ -35,6 +35,8 @@ const App = () => {
   const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE_URL);
   const [imageTitle, setImageTitle] = useState("This is image title");
 
+  const [status, setStatus] = useState<string>("2d");
+
   const processImage = useCallback((image: Image) => {
     setImageUrl(image.imageUrl);
     setImageTitle(image.imageTitle);
@@ -46,6 +48,18 @@ const App = () => {
     const data = await response.json();
     setData(data);
   }
+
+  const switchMap = () => {
+    if (status === "2d") {
+      setStatus("3d");
+      console.log("switch map from 2d to 3d");
+      postMsg("switchMap3d");
+    } else if (status === "3d") {
+      setStatus("2d");
+      console.log("switch map from 3d to 2d");
+      postMsg("switchMap2d");
+    }
+  };
 
   const addPointAction = useCallback((point: Point) => {
     setPoint(point);
@@ -87,6 +101,9 @@ const App = () => {
       <p>Latitude: {point?.lat}</p>
       <p>Longitude: {point?.lng}</p>
       <p>Height: {point?.height} </p>
+      <p>
+        <button onClick={switchMap}>Switch map {status}</button>
+      </p>
     </>
   );
 };

@@ -45,6 +45,22 @@ const DEFAULT_IMAGE_URL =
 
 const handles: actHandles = {
   addTest,
+  switchMap3d: () => {
+    console.log("switch map 3d");
+    (globalThis as any).reearth.scene.overrideProperty({
+      default: {
+        sceneMode: "3d",
+      },
+    });
+  },
+  switchMap2d: () => {
+    console.log("switch map 2d");
+    (globalThis as any).reearth.scene.overrideProperty({
+      default: {
+        sceneMode: "2d",
+      },
+    });
+  },
   getImage: () => {
     const imageUrl =
       (globalThis as any).reearth.widget.property?.customize?.imageUrl ??
