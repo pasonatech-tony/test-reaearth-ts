@@ -36,33 +36,37 @@ const addPoint = (point: Point) => {
   addPoint(point);
 });
 
-//todo: get value from right side panel input
-const imageUrl =
-  (globalThis as any).reearth.widget.property?.customize?.imageUrl ?? undefined;
-console.log("img url in be 1: ", imageUrl);
-
 const addTest = () => {
   console.log("test handles");
 };
 
+const DEFAULT_IMAGE_URL =
+  "https://images.unsplash.com/photo-1544185310-0b3cf501672b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
+
 const handles: actHandles = {
   addTest,
+  getImage: () => {
+    const imageUrl =
+      (globalThis as any).reearth.widget.property?.customize?.imageUrl ??
+      DEFAULT_IMAGE_URL;
+    const imageTitle =
+      (globalThis as any).reearth.widget.property?.customize?.imageTitle ??
+      "This is image title";
+
+    (globalThis as any).reearth.ui.postMessage({
+      act: "setImage",
+      payload: { imageUrl, imageTitle },
+    });
+  },
 };
 
 (globalThis as any).reearth.on("message", (msg: string) => {
-  console.log("msg on: ", msg);
-
   const data = JSON.parse(msg);
   if (data?.act) {
     handles[data.act]?.(data.payload);
   }
 });
 
-(globalThis as any).reearth.ui.postMessage({
-  act: "initProperties",
-  payload: {
-    imageTitle: (globalThis as any).reearth.widget.property?.customize
-      ?.imageTitle,
-    imageURL: imageUrl,
-  },
+(globalThis as any).reearth.on("update", () => {
+  handles.getImage?.();
 });

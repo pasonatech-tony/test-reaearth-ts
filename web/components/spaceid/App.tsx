@@ -1,4 +1,5 @@
 import type { actHandles } from "@web/types";
+import { postMsg } from "@web/utils/common";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export type ISS = {
@@ -13,20 +14,32 @@ export type Point = {
   height: number | undefined;
 };
 
+export type Image = {
+  imageUrl: string;
+  imageTitle: string;
+};
+
 const App = () => {
   const URL = "https://api.wheretheiss.at/v1/satellites/25544";
   const [data, setData] = useState<ISS>();
   const DEFAULT_IMAGE_URL =
     "https://images.unsplash.com/photo-1544185310-0b3cf501672b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
-  const [imageUrl] = useState<string>(
-    (window as any).pluginInitProperties?.imageURL ?? DEFAULT_IMAGE_URL
-  );
+  // const [imageUrl] = useState<string>(
+  //   (window as any).pluginInitProperties?.imageURL ?? DEFAULT_IMAGE_URL
+  // );
 
-  const [imageTitle] = useState<string>(
-    (window as any).pluginInitProperties?.imageTitle ?? "This is image title"
-  );
+  // const [imageTitle] = useState<string>(
+  //   (window as any).pluginInitProperties?.imageTitle ?? "This is image title"
+  // );
 
-  console.log("imageUrl in fe 1: ", imageUrl);
+  const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE_URL);
+  const [imageTitle, setImageTitle] = useState("This is image title");
+
+  const processImage = useCallback((image: Image) => {
+    setImageUrl(image.imageUrl);
+    setImageTitle(image.imageTitle);
+  }, []);
+
   const [point, setPoint] = useState<Point>();
   async function fetchData() {
     const response = await fetch(`${URL}`);
@@ -41,8 +54,9 @@ const App = () => {
   const actHandles: actHandles = useMemo(() => {
     return {
       addPointAction,
+      setImage: processImage,
     };
-  }, [addPointAction]);
+  }, [processImage, addPointAction]);
 
   useEffect(() => {
     (globalThis as any).addEventListener("message", (msg: any) => {
@@ -54,6 +68,7 @@ const App = () => {
         // eslint-disable-next-line no-empty
       } catch (error) {}
     });
+    postMsg("getImage");
     fetchData();
   }, []);
 

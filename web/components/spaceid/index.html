@@ -7,8 +7,9 @@
 <script>
   window.addEventListener("message", function (e) {
     if (e.source !== parent) return;
-    if (e.data.act === 'initProperties') {
-      window.pluginInitProperties = e.data.payload;
-    }
+    // if (e.data.act === 'setUrl') {
+    //   console.log("e.data.payload: ", e.data.payload)
+    //   window.pluginInitProperties = e.data.payload;
+    // }
   });
 </script>
