@@ -1,6 +1,27 @@
-import type { actHandles } from "@web/types";
+// import type { actHandles } from "@web/types";
+// import { postMsg } from "@web/utils/common";
+import { CloseOutlined, MenuOutlined } from "@ant-design/icons";
+import { Button, ConfigProvider, Tabs } from "antd";
+// import { useCallback, useEffect, useMemo } from "react";
+
+import "./global.css";
+
+import { useCallback, useState } from "react";
+
+import Tab from "../atoms/Tab";
+import Content from "../molecules/Content";
+import Header from "../molecules/Header";
+import PanelOne from "../molecules/PanelOne";
+import PanelTwo from "../molecules/PanelTwo";
+import SidebarPanel from "../molecules/SidebarPanel";
+
 import { postMsg } from "@web/utils/common";
-import { useCallback, useEffect, useMemo, useState } from "react";
+
+ConfigProvider.config({
+  theme: {
+    primaryColor: "#00BEBE",
+  },
+});
 
 export type ISS = {
   altitude: number;
@@ -20,10 +41,10 @@ export type Image = {
 };
 
 const App = () => {
-  const URL = "https://api.wheretheiss.at/v1/satellites/25544";
-  const [data, setData] = useState<ISS>();
-  const DEFAULT_IMAGE_URL =
-    "https://images.unsplash.com/photo-1544185310-0b3cf501672b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
+  // const URL = "https://api.wheretheiss.at/v1/satellites/25544";
+  // const [data, setData] = useState<ISS>();
+  // const DEFAULT_IMAGE_URL =
+  //   "https://images.unsplash.com/photo-1544185310-0b3cf501672b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80";
   // const [imageUrl] = useState<string>(
   //   (window as any).pluginInitProperties?.imageURL ?? DEFAULT_IMAGE_URL
   // );
@@ -32,78 +53,128 @@ const App = () => {
   //   (window as any).pluginInitProperties?.imageTitle ?? "This is image title"
   // );
 
-  const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE_URL);
-  const [imageTitle, setImageTitle] = useState("This is image title");
+  // const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE_URL);
+  // const [imageTitle, setImageTitle] = useState("This is image title");
 
-  const [status, setStatus] = useState<string>("2d");
-  const [isDrawing, setIsDrawing] = useState<boolean>(false);
+  // const [status, setStatus] = useState<string>("2d");
+  // const [isDrawing, setIsDrawing] = useState<boolean>(false);
 
-  const processImage = useCallback((image: Image) => {
-    setImageUrl(image.imageUrl);
-    setImageTitle(image.imageTitle);
+  // const processImage = useCallback((image: Image) => {
+  //   setImageUrl(image.imageUrl);
+  //   setImageTitle(image.imageTitle);
+  // }, []);
+
+  // const [point, setPoint] = useState<Point>();
+  // async function fetchData() {
+  //   const response = await fetch(`${URL}`);
+  //   const data = await response.json();
+  //   // setData(data);
+  // }
+
+  // const switchMap = () => {
+  //   if (status === "2d") {
+  //     setStatus("3d");
+  //     console.log("switch map from 2d to 3d");
+  //     postMsg("switchMap2d");
+  //   } else if (status === "3d") {
+  //     setStatus("2d");
+  //     console.log("switch map from 3d to 2d");
+  //     postMsg("switchMap3d");
+  //   }
+  // };
+
+  // const drawLine = () => {
+  //   if (isDrawing) {
+  //     setIsDrawing(false);
+  //     postMsg("drawLine");
+  //   } else {
+  //     setIsDrawing(true);
+  //   }
+  //   console.log("drawing: ", isDrawing);
+  // };
+
+  // const addPointAction = useCallback((point: Point) => {
+  //   setPoint(point);
+  // }, []);
+
+  // const actHandles: actHandles = useMemo(() => {
+  //   return {
+  //     addPointAction,
+  //     setImage: processImage,
+  //   };
+  // }, [processImage, addPointAction]);
+
+  // useEffect(() => {
+  //   (globalThis as any).addEventListener("message", (msg: any) => {
+  //     if (msg.source !== (globalThis as any).parent) return;
+  //     try {
+  //       const data =
+  //         typeof msg.data === "string" ? JSON.parse(msg.data) : msg.data;
+  //       actHandles[data.act as keyof actHandles]?.(data.payload);
+  //       // eslint-disable-next-line no-empty
+  //     } catch (error) {}
+  //   });
+  //   postMsg("getImage");
+  //   fetchData();
+  // }, []);
+
+  const items = [
+    {
+      label: <Tab icon="map" text="背景地図を選ぶ" />,
+      key: "item-1",
+      children: <PanelOne />,
+    },
+    {
+      label: <Tab icon="dataset" text="図を重ねる" />,
+      key: "item-2",
+      children: <PanelTwo />,
+    },
+  ];
+
+  const [isSidebarShown, setSidebarShown] = useState(true);
+  const hideSidebar = useCallback(() => {
+    setSidebarShown(false);
+    setTimeout(() => {
+      postMsg("setSidebarShown", false);
+    }, 250);
   }, []);
 
-  const [point, setPoint] = useState<Point>();
-  async function fetchData() {
-    const response = await fetch(`${URL}`);
-    const data = await response.json();
-    setData(data);
-  }
-
-  const switchMap = () => {
-    if (status === "2d") {
-      setStatus("3d");
-      console.log("switch map from 2d to 3d");
-      postMsg("switchMap3d");
-    } else if (status === "3d") {
-      setStatus("2d");
-      console.log("switch map from 3d to 2d");
-      postMsg("switchMap2d");
-    }
-  };
-
-  const drawLine = () => {
-    if (isDrawing) {
-      setIsDrawing(false);
-      postMsg("drawLine");
-    } else {
-      setIsDrawing(true);
-    }
-    console.log("drawing: ", isDrawing);
-  };
-
-  const addPointAction = useCallback((point: Point) => {
-    setPoint(point);
-  }, []);
-
-  const actHandles: actHandles = useMemo(() => {
-    return {
-      addPointAction,
-      setImage: processImage,
-    };
-  }, [processImage, addPointAction]);
-
-  useEffect(() => {
-    (globalThis as any).addEventListener("message", (msg: any) => {
-      if (msg.source !== (globalThis as any).parent) return;
-      try {
-        const data =
-          typeof msg.data === "string" ? JSON.parse(msg.data) : msg.data;
-        actHandles[data.act as keyof actHandles]?.(data.payload);
-        // eslint-disable-next-line no-empty
-      } catch (error) {}
-    });
-    postMsg("getImage");
-    fetchData();
+  const showSidebar = useCallback(() => {
+    postMsg("setSidebarShown", true);
+    setTimeout(() => {
+      setSidebarShown(true);
+    }, 100);
   }, []);
 
   return (
-    <>
-      <img src={imageUrl} width={30} height={30} alt="image from right panel" />
-      <p>
+    <ConfigProvider>
+      <Button
+        type="default"
+        icon={<MenuOutlined />}
+        size={"large"}
+        onClick={showSidebar}
+        style={{ position: "absolute", border: "none" }}
+      />
+      <SidebarPanel visible={isSidebarShown}>
+        <Button
+          type="primary"
+          icon={<CloseOutlined />}
+          size={"middle"}
+          onClick={hideSidebar}
+          style={{ position: "absolute", right: "0", borderRadius: "0" }}
+        />
+        <Header />
+        <Content>
+          <Tabs centered items={items} />
+        </Content>
+      </SidebarPanel>
+
+      {/* <h1>My globe Topography</h1>
+      <img src={imageUrl} width={30} height={30} alt="image from right panel" /> */}
+      {/* <p>
         <button onClick={drawLine}>{isDrawing ? "Start" : "Stop"} draw</button>
-      </p>
-      <span>{imageTitle}</span>
+      </p> */}
+      {/* <span>{imageTitle}</span>
       <h1>Current ISS location</h1>
       <p>Latitude: {data?.latitude}</p>
       <p>Longitude: {data?.longitude}</p>
@@ -117,8 +188,8 @@ const App = () => {
       <p>Height: {point?.height} </p>
       <p>
         <button onClick={switchMap}>Switch map {status}</button>
-      </p>
-    </>
+      </p> */}
+    </ConfigProvider>
   );
 };
 
