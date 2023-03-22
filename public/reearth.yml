@@ -10,6 +10,9 @@ extensions:
         - id: customize
           title: Customize
           fields:
+            - id: modelUrl
+              type: url
+              title: Model URL
             - id: imageUrl
               type: url
               title: Image URL

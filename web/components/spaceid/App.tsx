@@ -36,6 +36,7 @@ const App = () => {
   const [imageTitle, setImageTitle] = useState("This is image title");
 
   const [status, setStatus] = useState<string>("2d");
+  const [isDrawing, setIsDrawing] = useState<boolean>(false);
 
   const processImage = useCallback((image: Image) => {
     setImageUrl(image.imageUrl);
@@ -59,6 +60,16 @@ const App = () => {
       console.log("switch map from 3d to 2d");
       postMsg("switchMap2d");
     }
+  };
+
+  const drawLine = () => {
+    if (isDrawing) {
+      setIsDrawing(false);
+      postMsg("drawLine");
+    } else {
+      setIsDrawing(true);
+    }
+    console.log("drawing: ", isDrawing);
   };
 
   const addPointAction = useCallback((point: Point) => {
@@ -89,6 +100,9 @@ const App = () => {
   return (
     <>
       <img src={imageUrl} width={30} height={30} alt="image from right panel" />
+      <p>
+        <button onClick={drawLine}>{isDrawing ? "Start" : "Stop"} draw</button>
+      </p>
       <span>{imageTitle}</span>
       <h1>Current ISS location</h1>
       <p>Latitude: {data?.latitude}</p>
